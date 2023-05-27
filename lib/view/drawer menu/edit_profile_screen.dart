@@ -133,24 +133,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Center(
                       child: Container(
-                          height: 200,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black45, width: 3),
-                          ),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: _profileImageUrl != null
-                                ? Image.network(
-                                    _profileImageUrl!,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Icon(
-                                    Icons.account_circle,
-                                    size: 150,
-                                  ),
-                          )),
+                        height: 200,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.black45, width: 3),
+                        ),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          backgroundImage: _selectedImage != null
+                              ? FileImage(_selectedImage!) as ImageProvider
+                              : (_profileImageUrl != null
+                                  ? NetworkImage(_profileImageUrl!)
+                                  : null),
+                          child:
+                              _selectedImage == null && _profileImageUrl == null
+                                  ? Icon(
+                                      Icons.account_circle,
+                                      size: 150,
+                                    )
+                                  : null,
+                        ),
+                      ),
                     ),
                   ),
                   InkWell(

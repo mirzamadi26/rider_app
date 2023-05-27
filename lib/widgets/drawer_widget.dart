@@ -55,62 +55,67 @@ class _MyDrawerHeaderState extends State<MyDrawerHeader> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ProfileScreen()));
             },
-            child: Row(
-              children: [
-                Container(
-                    width: w / 3,
-                    height: h / 10,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: w / 10, // Adjust the radius as needed
+                    child: ClipOval(
+                      child: SizedBox(
+                        width: w / 3, // Adjust the width as needed
+                        height: h / 6, // Adjust the height as needed
+                        child: _profileImageUrl != null
+                            ? Image.network(
+                                _profileImageUrl!,
+                                fit: BoxFit.cover,
+                              )
+                            : Icon(
+                                Icons.account_circle,
+                                size: 80,
+                              ),
+                      ),
                     ),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: _profileImageUrl != null
-                          ? Image.network(
-                              _profileImageUrl!,
-                              fit: BoxFit.cover,
-                            )
-                          : Icon(
-                              Icons.account_circle,
-                              size: 80,
-                            ),
-                    )),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FutureBuilder(
-                      future: DatabaseService.fetchUserName(),
-                      builder: ((context, AsyncSnapshot<UserModel> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text("Error: ${snapshot.error}");
-                        } else {
-                          final user = snapshot.data;
-                          return Text('${user!.firstName}',
-                              style: TextStyle(fontWeight: FontWeight.bold));
-                        }
-                      }),
-                    ),
-                    TextButton(
-                        style: TextButton.styleFrom(
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: EdgeInsets.zero),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProfileScreen()));
-                        },
-                        child: Text(
-                          "Edit Profile",
-                          style: TextStyle(fontSize: 11),
-                        ))
-                  ],
-                ),
-              ],
+                  ),
+                  SizedBox(width: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FutureBuilder(
+                        future: DatabaseService.fetchUserName(),
+                        builder: ((context, AsyncSnapshot<UserModel> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text("Error: ${snapshot.error}");
+                          } else {
+                            final user = snapshot.data;
+                            return Text('${user!.firstName}',
+                                style: TextStyle(fontWeight: FontWeight.bold));
+                          }
+                        }),
+                      ),
+                      TextButton(
+                          style: TextButton.styleFrom(
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              padding: EdgeInsets.zero),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProfileScreen()));
+                          },
+                          child: Text(
+                            "Edit Profile",
+                            style: TextStyle(fontSize: 11),
+                          ))
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(

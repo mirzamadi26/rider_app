@@ -74,14 +74,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                    width: w / 3,
-                    height: h / 10,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: w / 10, // Adjust the radius as needed
+                  child: ClipOval(
+                    child: SizedBox(
+                      width: w / 3, // Adjust the width as needed
+                      height: h / 6, // Adjust the height as needed
                       child: _profileImageUrl != null
                           ? Image.network(
                               _profileImageUrl!,
@@ -91,7 +90,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Icons.account_circle,
                               size: 80,
                             ),
-                    )),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 FutureBuilder(
                   future: DatabaseService.fetchUserName(),
                   builder: ((context, AsyncSnapshot<UserModel> snapshot) {

@@ -64,7 +64,6 @@ class _ProfileNameScreenState extends State<ProfileNameScreen> {
                       mobileNumber: '',
                       email: _auth.currentUser!.email,
                       isLoggedin: true,
-                      profileImageUrl: '',
                       authProvider: "Google"));
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => HomeScreen()));

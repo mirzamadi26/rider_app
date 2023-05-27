@@ -60,8 +60,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   double rideDetailsSheetMaxHeight = 0;
 
   double searchSheetHeight = 0.15;
-  double confirmRideHeight = 0;
+
   double driveConnectSheetHeight = 0;
+  double driveConnectSheetMaxHeight = 0;
   int index = 1;
   List cars = [
     {'id': 0, 'name': 'Uber Go', 'price': 15},
@@ -90,6 +91,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       rideDetailsSheetMaxHeight = 0;
       rideContainerHeight = 0;
       driveConnectSheetHeight = 0.35;
+      driveConnectSheetMaxHeight = 0.4;
     });
 
     String rideRequestId = await databaseService.createRideRequest(context);
@@ -409,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: DraggableScrollableSheet(
                   minChildSize: driveConnectSheetHeight,
                   initialChildSize: driveConnectSheetHeight,
-                  maxChildSize: 0.4,
+                  maxChildSize: driveConnectSheetMaxHeight,
                   builder: ((context, scrollController) {
                     return Container(
                         color: Colors.white,
@@ -622,6 +624,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       driveConnectSheetHeight = 0;
       rideDetailsSheetMaxHeight = 0;
       searchSheetHeight = 0.15;
+      driveConnectSheetMaxHeight = 0;
       drawerCanOpen = true;
     });
   }

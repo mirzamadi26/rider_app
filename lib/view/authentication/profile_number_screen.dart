@@ -63,7 +63,6 @@ class _ProfileNumberScreenState extends State<ProfileNumberScreen> {
                       mobileNumber: _auth.currentUser!.phoneNumber,
                       email: '',
                       authProvider: "Phone",
-                      profileImageUrl: '',
                       isLoggedin: true));
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => HomeScreen()));

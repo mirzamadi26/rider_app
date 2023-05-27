@@ -25,18 +25,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController lastNameController = TextEditingController();
 
   File? _selectedImage;
-  late String firstName;
-  late String lastName;
+  String? firstName;
+  String? lastName;
   final DatabaseService _databaseService = DatabaseService();
   final User? user = FirebaseAuth.instance.currentUser;
 
-  String _profileImageUrl = '';
+  String? _profileImageUrl;
   void _selectImage() async {
     File? image = await ImageService.selectImageFromGallery();
     if (image != null) {
       setState(() {
         _selectedImage = image;
       });
+      String? imageUrl =
+          await ImageService.uploadImageToFirebase(_selectedImage!, user!.uid);
+      if (imageUrl != null) {
+        setState(() {
+          _profileImageUrl = imageUrl;
+        });
+      }
     }
   }
 
@@ -47,17 +54,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       return;
     }
     final String userId = user.uid;
-    String? imageUrl =
-        await ImageService.uploadImageToFirebase(_selectedImage!, userId);
-    String firstName = firstNameController.text;
-    String lastName = lastNameController.text;
-    if (imageUrl != null) {
-      print(imageUrl);
-      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+    String? imageUrl;
+    if (_selectedImage != null) {
+      imageUrl =
+          await ImageService.uploadImageToFirebase(_selectedImage!, userId);
+      if (imageUrl == null) {
+        return;
+      }
+    }
+
+    firstName = firstNameController.text;
+
+    lastName = lastNameController.text;
+    try {
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(userId);
+      final userData = {
         'firstName': firstName,
         'lastName': lastName,
-        'profileImageUrl': imageUrl
-      });
+      };
+      if (imageUrl != null) {
+        userData['profileImageUrl'] = imageUrl;
+      }
+      await userRef.update(userData);
+      print("Updated Successfully");
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -111,18 +133,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Center(
                       child: Container(
-                        height: 200,
-                        width: 200,
-                        decoration: BoxDecoration(
+                          height: 200,
+                          width: 200,
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.black45, width: 3),
-                            image: DecorationImage(
-                                image: _profileImageUrl != null
-                                    ? NetworkImage(_profileImageUrl)
-                                    : AssetImage('assets/placeholder.png')
-                                        as ImageProvider,
-                                fit: BoxFit.cover)),
-                      ),
+                          ),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: _profileImageUrl != null
+                                ? Image.network(
+                                    _profileImageUrl!,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Icon(
+                                    Icons.account_circle,
+                                    size: 150,
+                                  ),
+                          )),
                     ),
                   ),
                   InkWell(

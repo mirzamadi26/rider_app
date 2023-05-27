@@ -20,7 +20,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String _profileImageUrl = '';
+  String? _profileImageUrl;
   final User? user = FirebaseAuth.instance.currentUser;
   void _fetchProfileImage(String userId) async {
     final imageUrl = await ImageService.fetchProfileImageUrl(userId);
@@ -75,17 +75,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: w / 3,
-                  height: h / 10,
-                  decoration: BoxDecoration(
+                    width: w / 3,
+                    height: h / 10,
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: _profileImageUrl != null
-                              ? NetworkImage(_profileImageUrl)
-                              : AssetImage('assets/placeholder.png')
-                                  as ImageProvider,
-                          fit: BoxFit.cover)),
-                ),
+                    ),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: _profileImageUrl != null
+                          ? Image.network(
+                              _profileImageUrl!,
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(
+                              Icons.account_circle,
+                              size: 80,
+                            ),
+                    )),
                 FutureBuilder(
                   future: DatabaseService.fetchUserName(),
                   builder: ((context, AsyncSnapshot<UserModel> snapshot) {

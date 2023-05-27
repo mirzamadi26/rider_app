@@ -20,7 +20,7 @@ class MyDrawerHeader extends StatefulWidget {
 }
 
 class _MyDrawerHeaderState extends State<MyDrawerHeader> {
-  String _profileImageUrl = '';
+  String? _profileImageUrl;
   void _fetchProfileImage(String userId) async {
     final imageUrl = await ImageService.fetchProfileImageUrl(userId);
     if (imageUrl != null) {
@@ -58,17 +58,23 @@ class _MyDrawerHeaderState extends State<MyDrawerHeader> {
             child: Row(
               children: [
                 Container(
-                  width: w / 3,
-                  height: h / 10,
-                  decoration: BoxDecoration(
+                    width: w / 3,
+                    height: h / 10,
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: _profileImageUrl != null
-                              ? NetworkImage(_profileImageUrl)
-                              : AssetImage('assets/placeholder.png')
-                                  as ImageProvider,
-                          fit: BoxFit.cover)),
-                ),
+                    ),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: _profileImageUrl != null
+                          ? Image.network(
+                              _profileImageUrl!,
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(
+                              Icons.account_circle,
+                              size: 80,
+                            ),
+                    )),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -92,7 +98,12 @@ class _MyDrawerHeaderState extends State<MyDrawerHeader> {
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             padding: EdgeInsets.zero),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfileScreen()));
+                        },
                         child: Text(
                           "Edit Profile",
                           style: TextStyle(fontSize: 11),

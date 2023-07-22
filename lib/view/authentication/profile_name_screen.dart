@@ -5,6 +5,7 @@ import '../../model/user_model.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/button_widget.dart';
+import '../../widgets/progress_dialog.dart';
 import '../../widgets/textfield_widget.dart';
 import '../home/home_screen.dart';
 
@@ -17,9 +18,20 @@ class ProfileNameScreen extends StatefulWidget {
 
 class _ProfileNameScreenState extends State<ProfileNameScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _isLoading = false;
   TextEditingController firstNameController = TextEditingController();
 
   TextEditingController lastNameController = TextEditingController();
+
+  void _showProgressDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return ProgressDialog(status: 'Please Wait...');
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +70,11 @@ class _ProfileNameScreenState extends State<ProfileNameScreen> {
                 text: "Continue",
                 textColor: Colors.white,
                 function: () async {
+                  setState(() {
+                    _isLoading = true;
+                  });
+
+                  _showProgressDialog();
                   await authService.saveUserData(UserModel(
                       firstName: firstNameController.text,
                       lastName: lastNameController.text,
@@ -65,10 +82,11 @@ class _ProfileNameScreenState extends State<ProfileNameScreen> {
                       email: _auth.currentUser!.email,
                       isLoggedin: true,
                       authProvider: "Google"));
+                  Navigator.of(context).pop();
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => HomeScreen()));
                   //await authService.updateLoggedInStatus(true);
-                })
+                }),
           ],
         ),
       ),

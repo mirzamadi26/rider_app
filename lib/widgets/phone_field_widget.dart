@@ -47,7 +47,7 @@ class phone_text_field extends StatelessWidget {
             fillColor: Colors.grey.withOpacity(0.2),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
           ),
-          initialCountryCode: 'PK',
+          initialCountryCode: 'CA',
           onChanged: function2),
     );
   }

@@ -8,6 +8,7 @@ import '../../services/auth_service.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/utils.dart';
 import '../../widgets/opt_button.dart';
+import '../../widgets/progress_dialog.dart';
 import '../home/home_screen.dart';
 
 class OTPVerification extends StatefulWidget {
@@ -22,6 +23,18 @@ class OTPVerification extends StatefulWidget {
 class _OTPVerificationState extends State<OTPVerification> {
   FirebaseAuth auth = FirebaseAuth.instance;
   var code;
+  bool _isLoading = false;
+
+  void _showProgressDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return ProgressDialog(status: 'Verifying OTP...');
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     AuthService authService = AuthService();
@@ -96,6 +109,10 @@ class _OTPVerificationState extends State<OTPVerification> {
                     text: "Continue",
                     textColor: Colors.white,
                     function: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      _showProgressDialog();
                       try {
                         // Create a PhoneAuthCredential with the code
 
@@ -107,6 +124,10 @@ class _OTPVerificationState extends State<OTPVerification> {
                         // Sign the user in (or link) with the credential
                         await auth.signInWithCredential(credential);
                         final userExists = await authService.checkUserExists();
+                        Navigator.of(context).pop;
+                        setState(() {
+                          _isLoading = false;
+                        });
                         if (userExists) {
                           Navigator.push(
                               context,
@@ -120,6 +141,9 @@ class _OTPVerificationState extends State<OTPVerification> {
                         }
                       } catch (e) {
                         Utils.snackBar("Please Enter Correct OTP", context);
+                        setState(() {
+                          _isLoading = false;
+                        });
                       }
 
                       // Navigator.push(

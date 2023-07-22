@@ -8,34 +8,40 @@ class ProgressDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      backgroundColor: Colors.transparent,
-      child: Container(
-        margin: EdgeInsets.all(16),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(4),
+    return Center(
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              SizedBox(width: 5),
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.mainColor),
+        backgroundColor: Colors.transparent,
+        child: Align(
+          alignment: Alignment.center,
+          child: Container(
+            margin: EdgeInsets.all(16),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  SizedBox(width: 5),
+                  CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(AppColors.mainColor),
+                  ),
+                  SizedBox(
+                    width: 25,
+                  ),
+                  Text(
+                    status,
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
               ),
-              SizedBox(
-                width: 25,
-              ),
-              Text(
-                status,
-                style: TextStyle(fontSize: 15),
-              ),
-            ],
+            ),
           ),
         ),
       ),

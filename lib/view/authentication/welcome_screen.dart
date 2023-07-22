@@ -18,8 +18,20 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  bool _isLoading = false;
+  bool isPhoneLoading = false;
   String fullPhone = '';
   TextEditingController numberController = TextEditingController();
+  void _showProgressDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return ProgressDialog(status: 'Please Wait...');
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     AuthService authService = AuthService();
@@ -54,7 +66,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       });
                     },
                     function: (value) {
+                      setState(() {
+                        isPhoneLoading = true;
+                      });
+
+                      _showProgressDialog();
                       AuthService().otpVerificaion(fullPhone, context);
+                      Navigator.pop(context);
+                      setState(() {
+                        isPhoneLoading = false;
+                      });
+
                       print(fullPhone);
                     },
                     controller: numberController,
@@ -93,8 +115,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       text: "Sign in with Google",
                       textColor: Colors.black87,
                       function: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
                         await authService.signInWithGoogle(context);
                         final userExists = await authService.checkUserExists();
+                        setState(() {
+                          _isLoading = false;
+                        });
                         if (userExists) {
                           Navigator.push(
                               context,
@@ -107,6 +135,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                   builder: (context) => ProfileNameScreen()));
                         }
                       }),
+                  if (_isLoading)
+                    Center(child: ProgressDialog(status: 'Signing in...')),
                 ],
               ),
               SizedBox(

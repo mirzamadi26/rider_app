@@ -31,7 +31,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
   void searchPlace(String placeName) async {
     if (placeName.length > 1) {
       String url =
-          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${placeName}&key=${mapKey}&sessiontoken=123254251&components=country:pk';
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${placeName}&key=${mapKey}';
       var response = await RequestHelper.getRequest(url);
       if (response == 'failed') {
         return;

@@ -5,6 +5,7 @@ import '../../model/user_model.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/button_widget.dart';
+import '../../widgets/progress_dialog.dart';
 import '../../widgets/textfield_widget.dart';
 import '../home/home_screen.dart';
 
@@ -16,9 +17,20 @@ class ProfileNumberScreen extends StatefulWidget {
 }
 
 class _ProfileNumberScreenState extends State<ProfileNumberScreen> {
+  bool _isLoading = false;
   TextEditingController firstNameController = TextEditingController();
 
   TextEditingController lastNameController = TextEditingController();
+  void _showProgressDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return ProgressDialog(status: 'Please Wait...');
+      },
+    );
+  }
+
   FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
@@ -57,6 +69,11 @@ class _ProfileNumberScreenState extends State<ProfileNumberScreen> {
                 text: "Continue",
                 textColor: Colors.white,
                 function: () async {
+                  setState(() {
+                    _isLoading = true;
+                  });
+
+                  _showProgressDialog();
                   await authService.saveUserData(UserModel(
                       firstName: firstNameController.text,
                       lastName: lastNameController.text,
@@ -64,6 +81,7 @@ class _ProfileNumberScreenState extends State<ProfileNumberScreen> {
                       email: '',
                       authProvider: "Phone",
                       isLoggedin: true));
+                  Navigator.of(context).pop();
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => HomeScreen()));
                 })
